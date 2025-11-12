@@ -35,6 +35,33 @@ body {
   line-height: 100px;
 }
 
+@media (max-width: 1024px) {
+  .hero {
+    font-size: 60px;
+    line-height: 75px;
+    width: 80%;
+    margin-top: 50px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    font-size: 45px;
+    line-height: 55px;
+    width: 90%;
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    font-size: 32px;
+    line-height: 40px;
+    width: 95%;
+    margin-top: 30px;
+  }
+}
+
 .fancy {
   font-family: var(--font-space-grotesk);
   letter-spacing: -2.5px;
@@ -62,6 +89,29 @@ body {
   user-select: none;
 }
 
+@media (max-width: 1024px) {
+  .hero-description {
+    width: 70%;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-description {
+    width: 85%;
+    font-size: 0.9rem;
+    line-height: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-description {
+    width: 90%;
+    font-size: 0.85rem;
+    line-height: 20px;
+  }
+}
+
 .buttons {
   margin-top: 40px;
   display: flex;
@@ -70,6 +120,22 @@ body {
   width: 50%;
   margin-left: auto;
   margin-right: auto;
+}
+
+@media (max-width: 768px) {
+  .buttons {
+    width: 70%;
+    flex-wrap: wrap;
+    margin-top: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .buttons {
+    width: 90%;
+    flex-direction: column;
+    gap: 0;
+  }
 }
 
 ::selection,
