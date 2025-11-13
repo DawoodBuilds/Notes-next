@@ -9,6 +9,7 @@
   margin-right: auto;
   margin-top: 70px;
   line-height: 100px;
+  -webkit-user-drag: none;
 }
 
 @media (max-width: 1024px) {
@@ -62,6 +63,7 @@
   margin-right: auto;
   text-align: center;
   margin-top: 20px;
+  -webkit-user-drag: none;
 }
 
 @media (max-width: 1024px) {
