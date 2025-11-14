@@ -10,6 +10,7 @@ type ButtonProps = {
     | "auth-social-dark"
     | "fullwhite";
   className?: string;
+  onClick?: () => void;
 };
 const Button = ({
   children,
@@ -23,7 +24,7 @@ const Button = ({
     white: css.white,
     black: css.black,
     "auth-social-dark": css["auth-social-dark"],
-    "fullwhite": css["fullwhite"]
+    fullwhite: css["fullwhite"],
   };
   return (
     <button

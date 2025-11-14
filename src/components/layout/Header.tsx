@@ -12,7 +12,7 @@ const Header = () => {
   };
 
   return (
-    <header >
+    <header>
       <div className={`${css.header_content}`}>
         <div className={`${css.logo}`}>FlashNotes</div>
 
@@ -34,7 +34,9 @@ const Header = () => {
           <Navbar />
           <div className={`${css.last_header_item}`}>
             <div className={`${css.demo}`}>Watch demo</div>
-            <Button>Sign Up</Button>
+            <Button>
+              <a href="/register">Sign Up</a>
+            </Button>
           </div>
         </div>
       </div>
