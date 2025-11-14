@@ -45,7 +45,10 @@ const Register = () => {
         </Button>
       </div>
       <div className="login">
-        Already have an account? <span className="loginbtn">Log in</span>
+        Already have an account?{" "}
+        <a className="loginbtn" href="/login">
+          Log in
+        </a>
       </div>
     </div>
   );

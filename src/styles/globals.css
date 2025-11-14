@@ -93,4 +93,8 @@ body {
 
 .loginbtn {
   color: white;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 }
