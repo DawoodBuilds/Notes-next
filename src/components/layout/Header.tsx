@@ -3,10 +3,9 @@ import React, { useState } from "react";
 import css from "@/styles/Header.module.css";
 import Navbar from "./Navbar";
 import Button from "../ui/Button";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Header = () => {
-  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -36,7 +35,9 @@ const Header = () => {
           <Navbar />
           <div className={`${css.last_header_item}`}>
             <div className={`${css.demo}`}>Watch demo</div>
-            <Button onClick={() => router.push("/register")}>Sign Up</Button>
+            <Link href="/register" className="registerbtn rounded-md">
+              Sign Up
+            </Link>
           </div>
         </div>
       </div>
@@ -46,7 +47,9 @@ const Header = () => {
         <Navbar />
         <div className={`${css.sidebar_actions}`}>
           <div className={`${css.demo}`}>Watch demo</div>
-          <Button onClick={() => router.push("/register")}>Sign Up</Button>
+          <Link href="/register" className="registerbtn rounded-md">
+            Sign Up
+          </Link>
         </div>
       </div>
 

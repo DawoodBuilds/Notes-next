@@ -5,6 +5,7 @@ import axios from "@/lib/axios";
 import Input from "@/components/ui/InputWrapper";
 import Button from "@/components/ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
+import Link from "next/link";
 
 interface FormData {
   email: string;
@@ -148,9 +149,9 @@ const LoginForm = () => {
 
       <div className="login">
         Don&apos;t have an account?{" "}
-        <a className="loginbtn" href="/register">
+        <Link className="loginbtn" href="/register">
           Sign Up
-        </a>
+        </Link>
       </div>
     </form>
   );

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import axios from "@/lib/axios";
 import Input from "@/components/ui/InputWrapper";
 import Button from "@/components/ui/Button";
+import Link from "next/link";
 
 interface FormData {
   First_name: string;
@@ -279,9 +280,9 @@ export default function RegisterForm() {
       </div>
       <div className="login">
         Already have an account?{" "}
-        <a className="loginbtn" href="/login">
+        <Link className="loginbtn" href="/login">
           Log in
-        </a>
+        </Link>
       </div>
     </form>
   );
