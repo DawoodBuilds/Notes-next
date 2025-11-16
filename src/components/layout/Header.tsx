@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import css from "@/styles/Header.module.css";
 import Navbar from "./Navbar";
 import Link from "next/link";
+import Linker from "../ui/Linker";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,9 +35,7 @@ const Header = () => {
           <Navbar />
           <div className={`${css.last_header_item}`}>
             <div className={`${css.demo}`}>Watch demo</div>
-            <Link href="/register" className="registerbtn rounded-md">
-              Sign Up
-            </Link>
+            <Linker href="/login">Sign In</Linker>
           </div>
         </div>
       </div>
@@ -46,9 +45,7 @@ const Header = () => {
         <Navbar />
         <div className={`${css.sidebar_actions}`}>
           <div className={`${css.demo}`}>Watch demo</div>
-          <Link href="/register" className="registerbtn rounded-md">
-            Sign Up
-          </Link>
+          <Linker href="/login">Sign In</Linker>
         </div>
       </div>
 

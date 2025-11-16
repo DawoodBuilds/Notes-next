@@ -18,7 +18,7 @@ const SocialButtons = () => {
         variant="auth-social-dark"
         className="rounded-lg flex justify-center items-center gap-2"
       >
-        <FaGithub size={20} />
+        <FaGithub size={20} suppressHydrationWarning />
         Github
       </Button>
     </div>

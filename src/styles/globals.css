@@ -106,19 +106,3 @@ body {
   font-weight: 500;
   @apply text-sm text-blue-600 dark:text-blue-400 hover:underline;
 }
-
-.registerbtn {
-  display: inline-block;
-  font-family: var(--font-urbanist);
-  font-size: 1.2rem;
-  text-align: center;
-  cursor: pointer;
-  user-select: none;
-  border: 2px solid #dadada;
-  background: transparent;
-  color: black;
-  padding: 10px 36px;
-  margin: 10px;
-  font-weight: bold;
-  box-shadow: inset 1px 0 10px #4e474717, 4px 7px 10px 0px #e8e8e8b0;
-}
