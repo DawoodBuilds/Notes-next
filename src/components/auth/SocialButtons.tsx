@@ -1,6 +1,6 @@
 import React from "react";
 import css from "@/styles/SocialButtons.module.css";
-import Button from "../ui/Button";
+import Button from "../layout/Button";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 

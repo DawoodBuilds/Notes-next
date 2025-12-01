@@ -3,7 +3,7 @@ import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import axios from "@/lib/axios";
 import Input from "@/components/ui/InputWrapper";
-import Button from "@/components/ui/Button";
+import Button from "@/components/layout/Button";
 import Link from "next/link";
 
 interface FormData {

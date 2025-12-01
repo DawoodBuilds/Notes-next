@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Button from "@/components/ui/Button";
+import Button from "@/components/layout/Button";
 import css from "@/styles/Main.module.css";
 
 const Main = () => {

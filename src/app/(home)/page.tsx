@@ -3,7 +3,7 @@ import Main from "@/components/home/Main";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Recall.ai",
+  title: "Recap.ai",
 };
 
 export default function Home() {
