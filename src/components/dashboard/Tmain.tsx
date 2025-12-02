@@ -8,8 +8,14 @@ import Toaster, { showToast } from "../ui/Toast";
 import QuizCard from "../ui/QuizCard";
 import { Paperclip, ArrowLeft, ArrowRight } from "lucide-react";
 import { Input } from "../ui/input";
-import Link from "next/link";
 import { PenLine } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface QuizQuestion {
   question: string;
@@ -27,7 +33,8 @@ const Tmain = () => {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [previousDisabled, setPreviousDisabled] = useState(true);
-  const [nextDisabled, setNextDisabled] = useState(true);
+  const [isRestoring, setIsRestoring] = useState(true);
+  const [shakeError, setShakeError] = useState(false);
 
   const handleAnswerSelection = (answer: string) => {
     setUserAnswers((prev) => ({
@@ -53,17 +60,14 @@ const Tmain = () => {
   };
   const generateQuiz = async () => {
     if (!noteText.trim()) {
-      showToast({
-        title: "Empty notes",
-        description: "Please paste your notes before generating a quiz.",
-        variant: "error",
-      });
+      setShakeError(true);
+      setTimeout(() => setShakeError(false), 1000);
       return;
     }
     setStep("loading");
     setUserAnswers({});
     setCurrentQuestionIndex(0);
-
+    setPreviousDisabled(true);
     try {
       const response = await fetch("http://localhost:8000/api/generate/", {
         method: "POST",
@@ -113,18 +117,28 @@ const Tmain = () => {
     const savedData = localStorage.getItem("activeQuiz");
     const savedNote = localStorage.getItem("activeNoteText");
 
-    if (savedData || savedNote) {
+    if (savedData) {
+      const parsed = JSON.parse(savedData);
       setTimeout(() => {
-        if (savedData) {
-          const parsed = JSON.parse(savedData);
-          setQuestions(parsed.questions);
-          setCurrentQuestionIndex(parsed.currentQuestionIndex);
-          setUserAnswers(parsed.userAnswers);
-          setStep("quiz");
-        }
+        setQuestions(parsed.questions);
+        setCurrentQuestionIndex(parsed.currentQuestionIndex);
+        setUserAnswers(parsed.userAnswers);
         if (savedNote) {
           setNoteText(savedNote);
         }
+        const totalQuestions = parsed.questions.length;
+        const totalAnswers = Object.keys(parsed.userAnswers).length;
+        if (totalQuestions > 0 && totalAnswers === totalQuestions) {
+          setStep("result");
+        } else {
+          setStep("quiz");
+        }
+        setIsRestoring(false);
+      }, 0);
+    } else {
+      setTimeout(() => {
+        setStep("input");
+        setIsRestoring(false);
       }, 0);
     }
   }, []);
@@ -136,6 +150,17 @@ const Tmain = () => {
     setUserAnswers({});
     setCurrentQuestionIndex(0);
   };
+
+  if (isRestoring) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white min-w-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
+        <p className="text-slate-500 animate-pulse">
+          Restoring your session...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex flex-col items-center bg-slate-50 w-screen">
@@ -154,18 +179,25 @@ const Tmain = () => {
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-slate-500">Choices</span>
-                <select
-                  value={choices}
-                  onChange={(e) => setChoices(Number(e.target.value))}
-                  className="text-sm bg-white border border-slate-200 rounded-md px-2 py-1"
+                <span className="text-sm text-slate-500 font-medium">
+                  Questions:
+                </span>
+                <Select
+                  value={choices.toString()}
+                  onValueChange={(val) => setChoices(Number(val))}
                 >
-                  {Array.from({ length: 25 }, (_, i) => i + 1).map((n) => (
-                    <option key={n} value={n}>
-                      {n}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-[70px] h-9 border-slate-200 focus:ring-purple-500">
+                    <SelectValue placeholder="5" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[200px]">
+                    {" "}
+                    {Array.from({ length: 25 }, (_, i) => i + 1).map((n) => (
+                      <SelectItem key={n} value={n.toString()}>
+                        {n}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <Button
                 variant="outline"
@@ -194,7 +226,13 @@ const Tmain = () => {
                 />
               </div>
               {/* Content Input */}
-              <div className="rounded-lg bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <div
+                className={`rounded-lg bg-white border-2 shadow-sm hover:shadow-md transition-shadow ${
+                  shakeError
+                    ? "border-red-500 animate-shake"
+                    : "border-slate-200"
+                }`}
+              >
                 <Textarea
                   placeholder="Paste or type your notes here..."
                   className="text-base md:text-lg leading-relaxed text-slate-700 border-none resize-none shadow-none focus-visible:ring-0 p-4 min-h-[50vh] w-full"
@@ -209,7 +247,6 @@ const Tmain = () => {
 
           {/* 3. The Floating Magic Button */}
           <div className="fixed bottom-10 right-10 flex flex-col items-end gap-2">
-            {/* Character Count Hint (Optional Polish) */}
             <span className="text-xs text-slate-400 bg-white px-3 py-1 mr-3 mb-1 rounded-full shadow-sm border pointer-events-none select-none">
               {noteText.length} characters
             </span>
@@ -354,14 +391,10 @@ const Tmain = () => {
                         {userAnswer || "Not answered"}
                       </span>
                     </div>
-                    {!isSkipped && (
-                      <div className="text-sm text-slate-700">
-                        <span className="font-semibold">Correct answer: </span>
-                        <span className="text-green-700">
-                          {question.answer}
-                        </span>
-                      </div>
-                    )}
+                    <div className="text-sm text-slate-700">
+                      <span className="font-semibold">Correct answer: </span>
+                      <span className="text-green-700">{question.answer}</span>
+                    </div>
                   </div>
                 </div>
               );
