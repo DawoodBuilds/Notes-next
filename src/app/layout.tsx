@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Urbanist, Poppins, Montserrat } from "next/font/google";
 import "../styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/next";
 
 const space_grtoesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -80,6 +81,7 @@ export default function RootLayout({
           suppressHydrationWarning
         >
           {children}
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
