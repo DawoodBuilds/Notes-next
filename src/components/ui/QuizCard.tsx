@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "./button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 

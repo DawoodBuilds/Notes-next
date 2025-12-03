@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Textarea } from "../ui/textarea";
-import { Button } from "@/components/ui/button";
+import { Button } from "../ui/button";
 import { useState, useEffect } from "react";
 import { Spinner } from "../ui/spinner";
 import Toaster, { showToast } from "../ui/Toast";
