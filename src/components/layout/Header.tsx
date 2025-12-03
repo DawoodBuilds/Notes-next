@@ -14,7 +14,11 @@ const Header = () => {
   return (
     <header>
       <div className={`${css.header_content}`}>
-        <div className={`${css.logo}`}>Recap.ai</div>
+        <div className="flex items-center gap-2">
+          <span className="text-2xl font-bold tracking-tight text-slate-900">
+            Recap<span className="text-purple-600">.ai</span>
+          </span>
+        </div>
 
         {/* Hamburger Icon */}
         <button className={`${css.hamburger}`} onClick={toggleMenu}>

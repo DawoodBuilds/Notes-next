@@ -2,7 +2,7 @@
 import React from "react";
 import Button from "@/components/layout/Button";
 import css from "@/styles/Main.module.css";
-
+import Linker from "../ui/Linker";
 
 const Main = () => {
   const CancelDrag = (e: React.DragEvent) => e.preventDefault();
@@ -18,7 +18,9 @@ const Main = () => {
       </p>
       <div className={`${css.buttons}`}>
         <Button variant="white">Learn More</Button>
-        <Button variant="black">Get Started</Button>
+        <Linker variant="black" href="sign-in">
+          Get Started
+        </Linker>
       </div>
     </main>
   );

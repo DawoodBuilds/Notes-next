@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Tmain from "@/components/dashboard/Tmain";
 
 export const metadata: Metadata = {
-  title: "Generate",
+  title: "Recap.ai - AI Quiz Generator",
 };
 
 export default function Workspace() {

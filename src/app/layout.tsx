@@ -29,7 +29,38 @@ const urbanist = Urbanist({
 });
 
 export const metadata: Metadata = {
-  title: "Recap.ai",
+  title: "Recap.ai | Turn Notes into Quizzes",
+  description:
+    "The AI-powered study tool that converts PDFs and notes into interactive quizzes instantly. Stop reading, start testing.",
+
+  openGraph: {
+    title: "Recap.ai - AI Quiz Generator",
+    description: "Turn your boring notes into active quizzes in seconds.",
+    url: "https://recap-ai.vercel.app",
+    siteName: "Recap.ai",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Recap.ai Dashboard",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Recap.ai | Turn Notes into Quizzes",
+    description: "Turn your boring notes into active quizzes in seconds.",
+    images: ["/og-image.png"], 
+    creator: "@DawoodBuilds", 
+  },
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({
