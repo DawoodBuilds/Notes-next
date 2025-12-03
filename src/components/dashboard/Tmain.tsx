@@ -7,8 +7,19 @@ import { Spinner } from "../ui/spinner";
 import Toaster, { showToast } from "../ui/Toast";
 import QuizCard from "../ui/QuizCard";
 import { Paperclip, ArrowLeft, ArrowRight } from "lucide-react";
-import { Input } from "../ui/input";
-import { PenLine } from "lucide-react";
+import { getPDFText } from "@/lib/pdf";
+import { useRef } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   Select,
   SelectContent,
@@ -29,12 +40,72 @@ const Tmain = () => {
   const [title, setTitle] = useState("");
   const [step, setStep] = useState("input");
   const [choices, setChoices] = useState(5);
+  const [loadingMessage, setLoadingMessage] = useState("Generating Quiz...");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Size Check (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      showToast({
+        title: "File too large",
+        description: "Max 5MB allowed.",
+        variant: "error",
+      });
+      return;
+    }
+
+    if (file.type !== "application/pdf") {
+      showToast({
+        title: "Invalid Format",
+        description: "Only PDF files are allowed.",
+        variant: "error",
+      });
+      return;
+    }
+
+    // 1. Start Loading
+    setLoadingMessage("Extracting text from PDF...");
+    setStep("loading");
+
+    try {
+      const [text] = await Promise.all([
+        getPDFText(file),
+        new Promise((resolve) => setTimeout(resolve, 1500)),
+      ]);
+
+      setNoteText(text);
+      showToast({
+        title: "Success",
+        description: "PDF text extracted!",
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("PDF Error", error);
+      showToast({
+        title: "Error",
+        description: "Could not read PDF.",
+        variant: "error",
+      });
+    } finally {
+      setStep("input");
+      e.target.value = "";
+    }
+  };
   const [noteText, setNoteText] = useState("");
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [previousDisabled, setPreviousDisabled] = useState(true);
   const [isRestoring, setIsRestoring] = useState(true);
   const [shakeError, setShakeError] = useState(false);
+  const range = (start: number, stop: number, step: number = 5) =>
+    Array.from(
+      { length: (stop - start) / step + 1 },
+      (_, i) => start + i * step
+    );
+
+  const choices_num = range(1, 25, 1);
 
   const handleAnswerSelection = (answer: string) => {
     setUserAnswers((prev) => ({
@@ -64,12 +135,13 @@ const Tmain = () => {
       setTimeout(() => setShakeError(false), 1000);
       return;
     }
+    setLoadingMessage("Generating Quiz...");
     setStep("loading");
     setUserAnswers({});
     setCurrentQuestionIndex(0);
     setPreviousDisabled(true);
     try {
-      const response = await fetch("http://localhost:8000/api/generate/", {
+      const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ noteText: noteText, choices: choices }),
@@ -167,31 +239,26 @@ const Tmain = () => {
       <Toaster />
       {step === "input" && (
         <div className="h-screen bg-white w-screen flex flex-col">
-          {/* 1. Top Navigation / PDF Upload */}
-          <div className="flex justify-end items-end p-6 border-b border-slate-100 shrink-0">
-            <div className="text-center select-dark center-top">
-              <div className="text-transparent bg-clip-text bg-linear-to-br from-purple-600 to-indigo-600 font-extrabold text-3xl md:text-4xl tracking-tight">
-                Create Quiz
-              </div>
-              <div className="text-slate-500 text-sm mt-1">
-                Turn your notes into practice questions
-              </div>
+          <div className="flex justify-between items-center py-4 px-10 border-b border-slate-50 shrink-0">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold tracking-tight text-slate-900">
+                Recap<span className="text-purple-600">.ai</span>
+              </span>
             </div>
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-slate-500 font-medium">
-                  Questions:
+              <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                <span className="text-xs text-slate-400 font-medium uppercase tracking-wider">
+                  Questions
                 </span>
                 <Select
                   value={choices.toString()}
                   onValueChange={(val) => setChoices(Number(val))}
                 >
-                  <SelectTrigger className="w-[70px] h-9 border-slate-200 focus:ring-purple-500">
+                  <SelectTrigger className="w-[60px] h-8 border-none bg-transparent focus:ring-0 text-right p-0 font-semibold text-slate-700">
                     <SelectValue placeholder="5" />
                   </SelectTrigger>
-                  <SelectContent className="max-h-[200px]">
-                    {" "}
-                    {Array.from({ length: 25 }, (_, i) => i + 1).map((n) => (
+                  <SelectContent className="max-h-[180px]">
+                    {choices_num.map((n) => (
                       <SelectItem key={n} value={n.toString()}>
                         {n}
                       </SelectItem>
@@ -199,9 +266,19 @@ const Tmain = () => {
                   </SelectContent>
                 </Select>
               </div>
+
+              <input
+                type="file"
+                accept=".pdf"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleFileUpload}
+              />
+
               <Button
                 variant="outline"
                 className="gap-2 border-dashed border-slate-300 text-slate-600"
+                onClick={() => fileInputRef.current?.click()} // <--- Triggers the hidden input
               >
                 <Paperclip className="w-4 h-4" />
                 Upload PDF
@@ -209,43 +286,25 @@ const Tmain = () => {
             </div>
           </div>
 
-          {/* 2. The Editor Container */}
-          <div className="flex-1 flex flex-col items-center justify-start px-6 md:px-12 overflow-y-auto py-8">
-            <div className="w-full max-w-4xl">
-              {/* Title Input */}
-              <div className="w-full max-w-4xl mb-8 relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  <PenLine size={24} />
-                </div>
-
-                <Input
-                  placeholder="Name your study set..."
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="w-full pl-14 pr-4 py-8 text-3xl font-bold text-slate-800 bg-slate-50 border-2 border-transparent rounded-2xl placeholder:text-slate-400 placeholder:font-medium focus-visible:ring-0 focus-visible:border-black focus-visible:bg-white transition-all duration-300 ease-out"
-                />
-              </div>
-              {/* Content Input */}
+          <div className="flex flex-col items-center justify-start px-4 md:px-8 overflow-y-auto py-6 min-h-[80vh]">
+            <div className="w-full max-w-3xl h-full flex flex-col">
               <div
-                className={`rounded-lg bg-white border-2 shadow-sm hover:shadow-md transition-shadow ${
+                className={`flex-1 rounded-2xl bg-white border-2 transition-all duration-300 h-full flex flex-col ${
                   shakeError
                     ? "border-red-500 animate-shake"
-                    : "border-slate-200"
+                    : "border-slate-100 hover:border-purple-100 shadow-sm hover:shadow-md"
                 }`}
               >
                 <Textarea
-                  placeholder="Paste or type your notes here..."
-                  className="text-base md:text-lg leading-relaxed text-slate-700 border-none resize-none shadow-none focus-visible:ring-0 p-4 min-h-[50vh] w-full"
+                  placeholder="Paste your notes here to generate a quiz..."
+                  className="flex-1 text-lg md:text-xl leading-relaxed text-slate-700 border-none resize-none shadow-none focus-visible:ring-0 p-8 w-full h-full bg-transparent"
                   value={noteText}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    setNoteText(e.target.value)
-                  }
+                  onChange={(e) => setNoteText(e.target.value)}
                 />
               </div>
             </div>
           </div>
 
-          {/* 3. The Floating Magic Button */}
           <div className="fixed bottom-10 right-10 flex flex-col items-end gap-2">
             <span className="text-xs text-slate-400 bg-white px-3 py-1 mr-3 mb-1 rounded-full shadow-sm border pointer-events-none select-none">
               {noteText.length} characters
@@ -261,25 +320,22 @@ const Tmain = () => {
         </div>
       )}
 
-      {/* STAGE 2: LOADING (Overlay) */}
       {step === "loading" && (
-        <div className="absolute inset-0 bg-white/50 backdrop-blur-md flex items-center justify-center">
-          <div className="p-6 rounded-lg bg-white shadow-lg border flex items-center gap-4">
+        <div className="absolute inset-0 bg-white/50 backdrop-blur-md flex items-center justify-center z-50">
+          <div className="p-6 rounded-lg bg-white shadow-2xl border flex items-center gap-4 animate-in zoom-in duration-300">
             <Spinner />
             <div>
-              <div className="font-semibold">Generating Quiz...</div>
+              <div className="font-semibold text-lg">{loadingMessage}</div>
               <div className="text-sm text-slate-500">
-                This may take a few seconds — hang tight!
+                This may take a few seconds...
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* STAGE 3: ONE-BY-ONE QUIZ */}
       {step === "quiz" && (
         <div className="max-w-2xl min-w-[50vw] w-full p-6">
-          {/* Progress Bar */}
           <div className="w-full bg-gray-200 h-2 rounded-full mb-8">
             <div
               className="bg-purple-600 h-2 rounded-full transition-all duration-500"
@@ -290,31 +346,66 @@ const Tmain = () => {
               }}
             />
           </div>
-
-          {/* The Single Card */}
           <QuizCard
             key={currentQuestionIndex}
             data={questions[currentQuestionIndex]}
             onAnswer={handleAnswerSelection}
             savedAnswer={userAnswers[currentQuestionIndex]}
           />
-
-          {/* Navigation */}
-          <div className="flex justify-between mt-8">
-            <Button onClick={handlePrevious} disabled={previousDisabled}>
-              <ArrowLeft /> Previous
+          <div className="flex justify-between items-center mt-8 w-full">
+            <Button
+              variant="outline"
+              onClick={handlePrevious}
+              disabled={previousDisabled}
+              className="w-32 cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" /> Previous
             </Button>
-            <Button onClick={handleNext}>
-              Next <ArrowRight />
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="px-6 cursor-pointer"
+                >
+                  Exit Quiz
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will cancel your current quiz and you will lose all
+                    progress. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleExit}
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                  >
+                    Yes, Exit
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <Button
+              variant="outline"
+              onClick={handleNext}
+              className="w-32 text-black"
+            >
+              {currentQuestionIndex === questions.length - 1
+                ? "Finish"
+                : "Next"}
+              <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
         </div>
       )}
-
-      {/* STAGE 4: RESULTS */}
       {step === "result" && (
         <div className="max-w-4xl w-full p-6">
-          {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-slate-800 mb-2">
               Quiz Complete!
@@ -327,8 +418,6 @@ const Tmain = () => {
               right answers out of {questions.length}
             </p>
           </div>
-
-          {/* Results List */}
           <div className="space-y-4">
             {questions.map((question, index) => {
               const userAnswer = userAnswers[index];
@@ -346,7 +435,6 @@ const Tmain = () => {
                       : "bg-red-50 border-red-300"
                   }`}
                 >
-                  {/* Question */}
                   <div className="flex items-start gap-4 mb-4">
                     <div className="text-sm font-bold rounded-full w-8 h-8 flex items-center justify-center shrink-0 bg-slate-200 text-slate-700">
                       {index + 1}
@@ -356,7 +444,6 @@ const Tmain = () => {
                     </h3>
                   </div>
 
-                  {/* Status Badge */}
                   <div className="flex items-center gap-2 mb-4">
                     {isSkipped && (
                       <span className="px-3 py-1 bg-slate-200 text-slate-700 text-sm font-semibold rounded-full">
@@ -374,8 +461,6 @@ const Tmain = () => {
                       </span>
                     )}
                   </div>
-
-                  {/* Answers */}
                   <div className="space-y-2 ml-12">
                     <div className="text-sm text-slate-700">
                       <span className="font-semibold">Your answer: </span>
@@ -400,8 +485,6 @@ const Tmain = () => {
               );
             })}
           </div>
-
-          {/* Finish Button */}
           <div className="flex justify-center mt-12">
             <Button onClick={handleExit} className="px-12 py-4 text-lg">
               Finish & Go Back

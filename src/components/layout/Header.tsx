@@ -34,7 +34,7 @@ const Header = () => {
           <Navbar />
           <div className={`${css.last_header_item}`}>
             <div className={`${css.demo}`}>Watch demo</div>
-            <Linker href="/login">Sign In</Linker>
+            <Linker href="/sign-in">Sign In</Linker>
           </div>
         </div>
       </div>

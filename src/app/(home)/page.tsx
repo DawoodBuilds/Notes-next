@@ -1,12 +1,14 @@
 import Header from "@/components/layout/Header";
 import Main from "@/components/home/Main";
-import { Metadata } from "next";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Recap.ai",
-};
+export default async function Home() {
+  const { userId } = await auth(); 
 
-export default function Home() {
+  if (userId) {
+    redirect("/dashboard");
+  }
   return (
     <>
       <div className="home">

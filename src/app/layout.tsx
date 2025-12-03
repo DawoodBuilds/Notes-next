@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Urbanist, Poppins, Montserrat } from "next/font/google";
 import "../styles/globals.css";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const space_grtoesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -29,7 +29,7 @@ const urbanist = Urbanist({
 });
 
 export const metadata: Metadata = {
-  title: "FlashNotes",
+  title: "Recap.ai",
 };
 
 export default function RootLayout({
@@ -38,16 +38,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <meta name="color-scheme" content="dark only" />
-      </head>
-      <body
-        className={`${space_grtoesk.variable} ${urbanist.variable} ${poppins.variable} ${montserrat.variable} antialiased`}
-        suppressHydrationWarning
-      >
-        <AuthProvider>{children}</AuthProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <head>
+          <meta name="color-scheme" content="dark only" />
+        </head>
+        <body
+          className={`${space_grtoesk.variable} ${urbanist.variable} ${poppins.variable} ${montserrat.variable} antialiased`}
+          suppressHydrationWarning
+        >
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
