@@ -48,7 +48,7 @@ const Header = () => {
         <Navbar />
         <div className={`${css.sidebar_actions}`}>
           <div className={`${css.demo}`}>Watch demo</div>
-          <Linker href="/login">Sign In</Linker>
+          <Linker href="/sign-in">Sign In</Linker>
         </div>
       </div>
 
