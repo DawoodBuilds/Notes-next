@@ -76,11 +76,6 @@ const Tmain = () => {
       ]);
 
       setNoteText(text);
-      showToast({
-        title: "Success",
-        description: "PDF text extracted!",
-        variant: "success",
-      });
     } catch (error) {
       console.error("PDF Error", error);
       showToast({
