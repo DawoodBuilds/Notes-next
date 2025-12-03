@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { X, CheckCircle, AlertTriangle, Info } from "lucide-react";
-import { Button } from "./button_temp";
+import { Button } from "./button";
 
 export type ToastVariant = "success" | "error" | "info" | "warn";
 
