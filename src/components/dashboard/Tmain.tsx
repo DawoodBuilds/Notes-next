@@ -45,8 +45,6 @@ const Tmain = () => {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    // Size Check (5MB)
     if (file.size > 5 * 1024 * 1024) {
       showToast({
         title: "File too large",
@@ -65,7 +63,6 @@ const Tmain = () => {
       return;
     }
 
-    // 1. Start Loading
     setLoadingMessage("Extracting text from PDF...");
     setStep("loading");
 
