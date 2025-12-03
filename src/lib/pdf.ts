@@ -1,3 +1,6 @@
+interface TextItem {
+  str: string;
+}
 export const getPDFText = async (file: File): Promise<string> => {
   const pdfjsLib = await import("pdfjs-dist");
   pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
@@ -7,7 +10,7 @@ export const getPDFText = async (file: File): Promise<string> => {
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const textContent = await page.getTextContent();
-    const items = textContent.items as any[];
+    const items = textContent.items as TextItem[];
     const pageText = items.map((item) => item.str).join(" ");
     fullText += pageText + "\n\n";
   }
