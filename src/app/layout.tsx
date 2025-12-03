@@ -29,6 +29,7 @@ const urbanist = Urbanist({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://recap-ai.vercel.app"),
   title: "Recap.ai | Turn Notes into Quizzes",
   description:
     "The AI-powered study tool that converts PDFs and notes into interactive quizzes instantly. Stop reading, start testing.",
@@ -53,8 +54,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Recap.ai | Turn Notes into Quizzes",
     description: "Turn your boring notes into active quizzes in seconds.",
-    images: ["/og-image.png"], 
-    creator: "@DawoodBuilds", 
+    images: ["/og-image.png"],
+    creator: "@DawoodBuilds",
   },
   icons: {
     icon: "/icon.png",
