@@ -301,7 +301,7 @@ const Tmain = () => {
             </span>
 
             <Button
-              className="rounded-full px-6 py-6 md:px-8 md:py-6 text-base md:text-lg shadow-2xl cursor-pointer bg-black transition-all duration-300 ease-in-out"
+              className="rounded-full px-6 py-6 md:px-8 md:py-6 text-base md:text-lg shadow-2xl cursor-pointer bg-black focus:scale-105 transition-all duration-300 ease-in-out"
               onClick={generateQuiz}
             >
               ✨ Generate
