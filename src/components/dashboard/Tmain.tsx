@@ -245,7 +245,7 @@ const Tmain = () => {
                   value={choices.toString()}
                   onValueChange={(val) => setChoices(Number(val))}
                 >
-                  <SelectTrigger className="w-[60px] h-8 border-none bg-transparent focus:ring-0 text-right p-0 font-semibold text-slate-700">
+                  <SelectTrigger className="w-[60px] h-8 border-none bg-transparent focus:ring-0 focus:ring-offset-0 text-right p-0 font-semibold text-slate-700 focus-visible:ring-0 focus-visible:ring-offset-0">
                     <SelectValue placeholder="5" />
                   </SelectTrigger>
                   <SelectContent className="max-h-[180px]">
