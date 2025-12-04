@@ -30,7 +30,7 @@ const urbanist = Urbanist({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://recap-ai.vercel.app"),
+  metadataBase: new URL("https://try-recap.vercel.app"),
   title: "Recap.ai | Turn Notes into Quizzes",
   description:
     "The AI-powered study tool that converts PDFs and notes into interactive quizzes instantly. Stop reading, start testing.",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Recap.ai - AI Quiz Generator",
     description: "Turn your boring notes into active quizzes in seconds.",
-    url: "https://recap-ai.vercel.app",
+    url: "https://try-recap.vercel.app",
     siteName: "Recap.ai",
     images: [
       {

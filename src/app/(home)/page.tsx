@@ -9,6 +9,7 @@ export default async function Home() {
   if (userId) {
     redirect("/dashboard");
   }
+  
   return (
     <>
       <div className="home">
