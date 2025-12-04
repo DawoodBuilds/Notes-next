@@ -295,7 +295,7 @@ const Tmain = () => {
               </div>
             </div>
           </div>
-          <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 flex flex-col items-end gap-2 z-50 max-sm:bottom-10 max-sm:right-8">
+          <div className="fixed bottom-2 right-6 md:bottom-10 md:right-10 flex flex-col items-end gap-2 z-50 max-sm:bottom-10 max-sm:right-8">
             <span className="text-[10px] md:text-xs text-slate-400 bg-white px-2 py-1 mr-1 rounded-full shadow-sm border pointer-events-none select-none">
               {noteText.length} chars
             </span>
