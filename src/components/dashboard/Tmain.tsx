@@ -37,7 +37,6 @@ interface QuizQuestion {
 
 const Tmain = () => {
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
-  const [title, setTitle] = useState("");
   const [step, setStep] = useState("input");
   const [choices, setChoices] = useState(5);
   const [loadingMessage, setLoadingMessage] = useState("Generating Quiz...");
@@ -69,7 +68,7 @@ const Tmain = () => {
     try {
       const [text] = await Promise.all([
         getPDFText(file),
-        new Promise((resolve) => setTimeout(resolve, 1500)),
+        new Promise((resolve) => setTimeout(resolve, 1000)),
       ]);
 
       setNoteText(text);
@@ -217,9 +216,9 @@ const Tmain = () => {
 
   if (isRestoring) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white min-w-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
-        <p className="text-slate-500 animate-pulse">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white p-4 text-center min-w-screen">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-600 mb-4"></div>
+        <p className="text-slate-500 animate-pulse text-sm">
           Restoring your session...
         </p>
       </div>
@@ -230,16 +229,16 @@ const Tmain = () => {
     <div className="h-screen flex flex-col items-center bg-slate-50 w-screen">
       <Toaster />
       {step === "input" && (
-        <div className="h-screen bg-white w-screen flex flex-col">
-          <div className="flex justify-between items-center py-4 px-10 border-b border-slate-50 shrink-0">
-            <div className="flex items-center gap-2">
+        <div className="min-h-screen bg-white w-full flex flex-col">
+          <div className="flex flex-col md:flex-row justify-between items-center py-4 px-4 md:px-10 border-b border-slate-50 shrink-0 gap-4 md:gap-0">
+            <div className="flex items-center gap-2 w-full md:w-auto justify-center md:justify-start">
               <span className="text-2xl font-bold tracking-tight text-slate-900">
                 Recap<span className="text-purple-600">.ai</span>
               </span>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 w-full md:w-auto justify-center md:justify-end">
               <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-                <span className="text-xs text-slate-400 font-medium uppercase tracking-wider">
+                <span className="text-xs text-slate-400 font-medium uppercase tracking-wider hidden sm:inline">
                   Questions
                 </span>
                 <Select
@@ -269,19 +268,19 @@ const Tmain = () => {
 
               <Button
                 variant="outline"
-                className="gap-2 border-dashed border-slate-300 text-slate-600"
-                onClick={() => fileInputRef.current?.click()} // <--- Triggers the hidden input
+                size="sm"
+                className="gap-2 border-dashed border-slate-300 text-slate-600 text-xs md:text-sm"
+                onClick={() => fileInputRef.current?.click()}
               >
-                <Paperclip className="w-4 h-4" />
+                <Paperclip className="w-3 h-3 md:w-4 md:h-4" />
                 Upload PDF
               </Button>
             </div>
           </div>
-
-          <div className="flex flex-col items-center justify-start px-4 md:px-8 overflow-y-auto py-6 min-h-[80vh]">
+          <div className="flex flex-col items-center justify-start px-4 md:px-8 overflow-y-auto py-6 flex-1">
             <div className="w-full max-w-3xl h-full flex flex-col">
               <div
-                className={`flex-1 rounded-2xl bg-white border-2 transition-all duration-300 h-full flex flex-col ${
+                className={`flex-1 rounded-2xl bg-white border-2 transition-all duration-300 h-full flex flex-col min-h-[50vh] ${
                   shakeError
                     ? "border-red-500 animate-shake"
                     : "border-slate-100 hover:border-purple-100 shadow-sm hover:shadow-md"
@@ -289,21 +288,20 @@ const Tmain = () => {
               >
                 <Textarea
                   placeholder="Paste your notes here to generate a quiz..."
-                  className="flex-1 text-lg md:text-xl leading-relaxed text-slate-700 border-none resize-none shadow-none focus-visible:ring-0 p-8 w-full h-full bg-transparent"
+                  className="flex-1 text-base md:text-xl leading-relaxed text-slate-700 border-none resize-none shadow-none focus-visible:ring-0 p-4 md:p-8 w-full h-full bg-transparent"
                   value={noteText}
                   onChange={(e) => setNoteText(e.target.value)}
                 />
               </div>
             </div>
           </div>
-
-          <div className="fixed bottom-10 right-10 flex flex-col items-end gap-2">
-            <span className="text-xs text-slate-400 bg-white px-3 py-1 mr-3 mb-1 rounded-full shadow-sm border pointer-events-none select-none">
-              {noteText.length} characters
+          <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 flex flex-col items-end gap-2 z-50 max-sm:bottom-10 max-sm:right-8">
+            <span className="text-[10px] md:text-xs text-slate-400 bg-white px-2 py-1 mr-1 rounded-full shadow-sm border pointer-events-none select-none">
+              {noteText.length} chars
             </span>
 
             <Button
-              className="rounded-full px-8 py-6 text-lg shadow-2xl cursor-pointer"
+              className="rounded-full px-6 py-6 md:px-8 md:py-6 text-base md:text-lg shadow-2xl cursor-pointer bg-black transition-all duration-300 ease-in-out"
               onClick={generateQuiz}
             >
               ✨ Generate
